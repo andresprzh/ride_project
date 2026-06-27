@@ -119,7 +119,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'apps.commons.pagination.BasePagination',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'apps.user.permissions.IsAdminRole',
     ]
 }
 SIMPLE_JWT = {
