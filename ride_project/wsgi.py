@@ -1,5 +1,5 @@
 """
-WSGI config for django_template project.
+WSGI config for ride_project project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

@@ -1,5 +1,5 @@
 """
-ASGI config for django_template project.
+ASGI config for ride_project project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
