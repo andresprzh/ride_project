@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_template.custom_settings.dev')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ride_project.custom_settings.dev')
 
     # start new section
     from django.conf import settings

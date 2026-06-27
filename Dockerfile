@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 
 
 # Set work directory
-ENV DJANGO_DIR=/django_template
+ENV DJANGO_DIR=/ride_project
 WORKDIR $DJANGO_DIR
 
 # Install system dependencies

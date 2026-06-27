@@ -1,14 +1,14 @@
 services:
 
     web:
-      image: django-template
-      container_name: django-template
+      image: django-ride-app
+      container_name: ride_project_web
       build: .
       env_file: conf/environments/.env
       command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
       # stdin_open: true
       volumes:
-      - .:/django_template
+      - .:/ride_project
       ports:
       - "9000:9000"
       - "4000:4000"
@@ -21,7 +21,7 @@ services:
       image: rabbitmq:3.8.3
       env_file: conf/environments/.env
       restart: always
-      container_name: django-template-rabbit
+      container_name: django-ride-rabbit
       command: rabbitmq-server
       hostname: my-rabbit
       volumes:
