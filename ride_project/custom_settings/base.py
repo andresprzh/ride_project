@@ -38,6 +38,7 @@ EXTERNAL_PACKAGES = [
 
 LOCAL_APPS = [
     'apps.user',
+    'apps.ride',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_PACKAGES + LOCAL_APPS
