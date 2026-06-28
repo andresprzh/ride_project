@@ -23,5 +23,6 @@ urlpatterns = [
             cache_timeout=0), name='schema-swagger-ui'),
     path('api/', include([
         path('auth/', include('apps.user.urls')),
+        path('ride/', include('apps.ride.urls')),
     ])),
 ]
