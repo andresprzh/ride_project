@@ -1,31 +1,36 @@
-# Django Template Project
+# Rides Project
 
-This is a Django project template designed for rapid development and easy integration with CI/CD pipelines. It comes pre-configured with essential tools and libraries for building robust web APIs and background task processing, as well as a ready-to-use debugging setup for Visual Studio Code.
+This project is a RESTful API application that allows an admin user to consult Rides or trips, this project uses JWT authentication.
+
+This project was built using a Django template I already have, which can be accessed at this link [django_template](https://github.com/andresprzh/django_template)
 
 ## Features
 
-- **Django**: The core web framework for building scalable web applications.
-- **Django REST Framework (DRF)**: Powerful and flexible toolkit for building Web APIs.
-- **Celery**: Distributed task queue for background job processing.
-- **django-celery-beat**: Periodic task scheduler for Celery.
-- **drf-yasg**: Automated OpenAPI/Swagger documentation for your APIs.
-- **debugpy**: Remote debugging support, pre-configured for VS Code.
-- **pytest, pytest-django, pytest-cov**: Modern testing stack with coverage reporting, ready for local and CI use.
+- **Django**
+- **Django REST Framework (DRF)**
+- **JWT Authentication**
+- **drf-yasg**
+- **debugpy**
+- **pytest, pytest-django, pytest-cov**
 
 ## Development Environment
 
 - **VS Code Debugging**: The project is set up to allow remote debugging with VS Code using `debugpy`. When running in debug mode, the server listens on port 4000 for debugger attachments. Simply use the provided VS Code launch configuration to attach to the running container or process.
 
-- **Docker & Docker Compose**: The template includes a `Dockerfile` and `docker-compose.yml` for easy local development and deployment. Environment variables are managed via `.env` files (excluded from version control).
+- **Docker & Docker Compose**: This project includes a `Dockerfile` and `docker-compose.yml` for easy local development and deployment. Environment variables are managed via `.env` files (excluded from version control).
 
 
 ## Project Structure
 
-- `django_template/` - Main Django project code
-- `django_template/custom_settings/` - Modular settings for different environments (e.g., `dev.py`, `base.py`)
+- `ride_project/` - Main Django project code
+- `ride_project/custom_settings/` - Modular settings for different environments (e.g., `dev.py`, `base.py`)
 - `requirements_admin/requirements.txt` - All Python dependencies
 - `docker-compose.yml` and `Dockerfile` - Containerization setup
 - `tests/` - Example and template tests using pytest
+- `.github/` - GitHub Copilot configuration:
+  - `copilot-instructions.md` - Coding guidelines applied whenever Python code is added, to keep it consistent with the project structure
+  - `skills/add_new_app/` - Skill to scaffold a new Django app inside the `apps/` folder
+  - `skills/rename_project/` - Skill to rename the Django project and update all references
 
 ## Quick Start
 
@@ -82,17 +87,84 @@ This is a Django project template designed for rapid development and easy integr
 
 4. **Run tests:**
    ```bash
-   docker compose run web pytest
+   docker compose run --rm web pytest
    ```
 
 5. **Attach VSCode debugger** to port 4000 if needed.
 
-## Notes
+7. **Fixture  test data**
 
-- The template is ready for extension with your own Django apps and API endpoints.
-- The `pytest.ini` is pre-configured for CI environments, ensuring consistent test discovery and execution.
-- Sensitive files and folders (such as `venv/`, `conf/environments/*`, and `important_data/`) are excluded from version control via `.gitignore`.
+   I add testing data for local environment in this project you can run  it with  this command, the test admin user from this fixture data is :
 
----
+      - user: test@test.com
+      - password: test12345
 
-Feel free to use and adapt this template for your own Django projects!
+   ```bash
+   docker compose run --rm web python manage.py loaddata apps/user/fixtures/users.json apps/ride/fixtures/rides.json apps/ride/fixtures/ride_events.json
+   ```
+
+6. **Create super user**
+
+   You can also create a super user with the Django command:
+
+   ```bash
+   docker compose run --rm web python manage.py createsuperuser
+   ```
+
+8. **Django Admin**
+
+   This project has Django admin configured, so if you created a superuser, you can use it to access it. 
+
+   [http://localhost:9000/admin](http://localhost:9000/admin)
+
+## SQL report
+
+This SQL  report show the number of rides where the duration from pickup to dropoff is greter than 1 hour. For this, I  assume that the correct date for pickup is  the one in the `ride_rideevent`  table and not the one in the `ride_ride` table.
+
+```sql
+WITH ride_times AS (
+    SELECT
+        rides.id,
+        rides.id_driver_id,
+        MIN(CASE
+                WHEN events.description ILIKE '%pickup%'
+                THEN events.created_at
+            END) AS pickup_time,
+        MAX(CASE
+                WHEN events.description ILIKE '%dropoff%'
+                THEN events.created_at
+            END) AS dropoff_time
+    FROM ride_rideevent events
+    INNER JOIN ride_ride rides
+        ON rides.id = events.id_ride_id
+    WHERE rides.status = 'dropoff'
+    GROUP BY rides.id, rides.id_driver_id
+),
+ride_duration AS (
+	SELECT
+	    ride_times.id,
+	    ride_times.id_driver_id,
+	    ride_times.pickup_time,
+	    ride_times.dropoff_time,
+	    ROUND(
+	        EXTRACT(EPOCH FROM (dropoff_time - pickup_time)) / 3600.0,
+	        2
+	    ) AS duration_hours
+	FROM ride_times
+)
+SELECT
+    TO_CHAR(ride_duration.pickup_time, 'YYYY-MM') AS month,
+    CONCAT(driver.first_name, ' ', driver.last_name) AS driver_name,
+    COUNT(*) AS rides_over_1_hour
+FROM ride_duration
+INNER JOIN user_user driver
+    ON driver.id = ride_duration.id_driver_id
+where ride_duration.duration_hours > 1
+group by (
+	TO_CHAR(ride_duration.pickup_time, 'YYYY-MM'),
+    driver.id,
+    driver.first_name,
+    driver.last_name
+); 
+
+```
