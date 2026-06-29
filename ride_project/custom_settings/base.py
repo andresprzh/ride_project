@@ -15,8 +15,6 @@ DOMAIN = os.environ.get('DOMAIN_URL', '')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-# BROKER
-CELERY_BROKER_URL = os.environ.get('BROKER_URL')
 
 # Application definition
 
@@ -30,7 +28,6 @@ DJANGO_APPS = [
 ]
 
 EXTERNAL_PACKAGES = [
-    'django_celery_beat',
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',

@@ -16,18 +16,3 @@ services:
       - "9000"
       sysctls:
       - net.ipv4.tcp_retries2=3
-
-    rabbitmq:
-      image: rabbitmq:3.8.3
-      env_file: conf/environments/.env
-      restart: always
-      container_name: django-ride-rabbit
-      command: rabbitmq-server
-      hostname: my-rabbit
-      volumes:
-        - ./important_data/rabbitmq:/var/lib/rabbitmq/mnesia
-      ports:
-        - "5672:5672"
-      expose:
-        - "5672"
-
