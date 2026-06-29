@@ -15,8 +15,6 @@ DOMAIN = os.environ.get('DOMAIN_URL', '')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-# BROKER
-CELERY_BROKER_URL = os.environ.get('BROKER_URL')
 
 # Application definition
 
@@ -30,7 +28,6 @@ DJANGO_APPS = [
 ]
 
 EXTERNAL_PACKAGES = [
-    'django_celery_beat',
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
@@ -38,6 +35,7 @@ EXTERNAL_PACKAGES = [
 
 LOCAL_APPS = [
     'apps.user',
+    'apps.ride',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + EXTERNAL_PACKAGES + LOCAL_APPS
@@ -116,9 +114,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'apps.commons.pagination.BasePagination',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'apps.user.permissions.IsAdminRole',
     ]
 }
 SIMPLE_JWT = {
@@ -130,6 +128,7 @@ SIMPLE_JWT = {
 }
 
 SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
         'Bearer': {
             'type': 'apiKey',
