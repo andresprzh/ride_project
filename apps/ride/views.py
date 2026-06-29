@@ -8,7 +8,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from apps.ride.models import Ride, RideEvent
-from apps.ride.serializers import RideSerializer, RideWriteSerializer
+from apps.ride.serializers import (
+    RideEventSerializer,
+    RideSerializer,
+    RideWriteSerializer,
+)
 
 
 ride_list_query_parameters = [
@@ -144,3 +148,12 @@ class RideViewSet(ModelViewSet):
             return float(value)
         except (TypeError, ValueError):
             raise ValidationError({name: 'Must be a valid number.'})
+
+
+class RideEventViewSet(ModelViewSet):
+    """Full CRUD for ride events."""
+
+    serializer_class = RideEventSerializer
+
+    def get_queryset(self):
+        return RideEvent.objects.select_related('id_ride').all()

@@ -4,6 +4,8 @@ This project is a RESTful API application that allows an admin user to consult R
 
 This project was built using a Django template I already have, which can be accessed at this link [django_template](https://github.com/andresprzh/django_template)
 
+**Note**: This project is  not clear if all  the models required the  CRUD exposed in endpoints, so I added it for all   models; however, for the  User models, I only allow the creation, listing, modification, and deletion of non-admin users.
+
 ## Features
 
 - **Django**

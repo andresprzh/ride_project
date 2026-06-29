@@ -7,4 +7,4 @@ class TestBasic:
         response = client.get(reverse('schema-swagger-ui'))
         assert response.status_code == 200
         html = response.content.decode('utf-8')
-        assert '<title>Django API</title>' in html
+        assert '<title>Ride trips</title>' in html
