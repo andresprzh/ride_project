@@ -48,7 +48,39 @@ class TestRideListContent:
         result = body['results'][0]
         assert result['rider']['email'] == 'rider@example.com'
         assert result['driver']['email'] == 'driver@example.com'
-        assert len(result['ride_events']) == 1
+        assert len(result['today_ride_events']) == 1
+
+
+class TestTodayRideEvents:
+    def test_only_events_from_last_24h_are_returned(self, api_client, url, admin_user, make_ride):
+        ride = make_ride()
+        RideEvent.objects.create(
+            id_ride=ride, description='Status changed to pickup',
+            created_at=timezone.now() - timedelta(hours=1),
+        )
+        RideEvent.objects.create(
+            id_ride=ride, description='Old event outside the window',
+            created_at=timezone.now() - timedelta(hours=48),
+        )
+        api_client.force_authenticate(admin_user)
+
+        body = api_client.get(url).json()
+        events = body['results'][0]['today_ride_events']
+
+        assert len(events) == 1
+        assert events[0]['description'] == 'Status changed to pickup'
+
+    def test_ride_without_recent_events_returns_empty_list(self, api_client, url, admin_user, make_ride):
+        ride = make_ride()
+        RideEvent.objects.create(
+            id_ride=ride, description='Old event',
+            created_at=timezone.now() - timedelta(days=5),
+        )
+        api_client.force_authenticate(admin_user)
+
+        body = api_client.get(url).json()
+
+        assert body['results'][0]['today_ride_events'] == []
 
 
 class TestRideListFiltering:

@@ -1,8 +1,11 @@
-from django.db.models import ExpressionWrapper, F, FloatField
+from datetime import timedelta
+
+from django.utils import timezone
+from django.db.models import ExpressionWrapper, Prefetch, F, FloatField
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView
 
-from apps.ride.models import Ride
+from apps.ride.models import Ride, RideEvent
 from apps.ride.serializers import RideSerializer
 
 
@@ -22,9 +25,21 @@ class RideListView(ListAPIView):
     serializer_class = RideSerializer
 
     def get_queryset(self):
+
+        today = timezone.now()
+        yesterday = today - timedelta(hours=24)
+        prefetch_today_ride_events = Prefetch(
+            'ride_events',
+            queryset=RideEvent.objects.filter(
+                created_at__lte=today,
+                created_at__gte=yesterday
+            ),
+            to_attr='today_ride_events'
+        )
+
         queryset = Ride.objects.select_related(
             'id_rider', 'id_driver',
-        ).prefetch_related('ride_events')
+        ).prefetch_related(prefetch_today_ride_events)
 
         queryset = self._apply_filters(queryset)
         queryset = self._apply_ordering(queryset)

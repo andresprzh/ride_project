@@ -44,11 +44,14 @@ class TestRideEventSerializer:
 class TestRideSerializer:
     def test_read_includes_nested_rider_driver_and_events(self, make_ride, rider, driver):
         ride = make_ride(status='pickup')
-        RideEvent.objects.create(
+        event = RideEvent.objects.create(
             id_ride=ride,
             description='Status changed to pickup',
             created_at=timezone.now(),
         )
+        # The view attaches the prefetched last-24h events to this attribute
+        # via Prefetch(to_attr=...); emulate that so the field can be tested.
+        ride.today_ride_events = [event]
 
         data = RideSerializer(ride).data
 
@@ -56,11 +59,13 @@ class TestRideSerializer:
         assert data['status'] == 'pickup'
         assert data['rider']['email'] == rider.email
         assert data['driver']['email'] == driver.email
-        assert len(data['ride_events']) == 1
-        assert data['ride_events'][0]['description'] == 'Status changed to pickup'
+        assert len(data['today_ride_events']) == 1
+        assert data['today_ride_events'][0]['description'] == 'Status changed to pickup'
 
     def test_id_rider_and_id_driver_are_write_only(self, make_ride):
-        data = RideSerializer(make_ride()).data
+        ride = make_ride()
+        ride.today_ride_events = []
+        data = RideSerializer(ride).data
         assert 'id_rider' not in data
         assert 'id_driver' not in data
 

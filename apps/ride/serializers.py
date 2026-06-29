@@ -27,7 +27,7 @@ class RideSerializer(serializers.ModelSerializer):
 
     rider = RideUserSerializer(source='id_rider', read_only=True)
     driver = RideUserSerializer(source='id_driver', read_only=True)
-    ride_events = RideEventSerializer(many=True, read_only=True)
+    today_ride_events = RideEventSerializer(many=True, read_only=True)
 
     class Meta:
         model = Ride
@@ -43,7 +43,7 @@ class RideSerializer(serializers.ModelSerializer):
             'dropoff_latitude',
             'dropoff_longitude',
             'pickup_time',
-            'ride_events',
+            'today_ride_events',
         )
         extra_kwargs = {
             'id_rider': {'write_only': True},
