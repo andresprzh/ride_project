@@ -3,8 +3,11 @@ from datetime import timedelta
 import pytest
 from django.urls import reverse
 from django.utils import timezone
+from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
 
 from apps.ride.models import RideEvent
+from apps.ride.views import RideViewSet
 from apps.user.models import User
 
 pytestmark = pytest.mark.django_db
@@ -12,7 +15,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def url():
-    return reverse('Rides:rides_list_view')
+    return reverse('Rides:ride-list')
 
 
 class TestRideListPermissions:
@@ -141,3 +144,33 @@ class TestRideListOrdering:
         api_client.force_authenticate(admin_user)
         response = api_client.get(url, {'ordering': 'banana'})
         assert response.status_code == 400
+
+
+class TestRideListQueryCount:
+    """Guard the performance requirement: the ride list with its related
+    rider, driver and (last-24h) events must be fetched in 2 queries.
+    """
+
+    def _build_queryset(self):
+        view = RideViewSet()
+        view.request = Request(APIRequestFactory().get('/api/ride/rides/'))
+        return view.get_queryset()
+
+    def test_data_is_fetched_in_two_queries(self, django_assert_num_queries, make_ride):
+        # Several rides, each with a recent event, so a regression to N+1
+        # would visibly increase the query count with the number of rows.
+        for _ in range(3):
+            ride = make_ride()
+            RideEvent.objects.create(
+                id_ride=ride, description='Status changed to pickup',
+                created_at=timezone.now(),
+            )
+
+        queryset = self._build_queryset()
+
+        # 1) rides + rider + driver via select_related JOIN
+        # 2) the last-24h ride events via prefetch_related
+        with django_assert_num_queries(2):
+            rides = list(queryset)
+            for ride in rides:
+                list(ride.today_ride_events)
