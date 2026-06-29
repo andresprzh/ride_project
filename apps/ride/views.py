@@ -2,14 +2,50 @@ from datetime import timedelta
 
 from django.utils import timezone
 from django.db.models import ExpressionWrapper, Prefetch, F, FloatField
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView
+from rest_framework.viewsets import ModelViewSet
 
 from apps.ride.models import Ride, RideEvent
-from apps.ride.serializers import RideSerializer
+from apps.ride.serializers import RideSerializer, RideWriteSerializer
 
 
-class RideListView(ListAPIView):
+ride_list_query_parameters = [
+    openapi.Parameter(
+        'status', openapi.IN_QUERY,
+        description='Filter rides by status.',
+        type=openapi.TYPE_STRING,
+        enum=['en-route', 'pickup', 'dropoff'],
+    ),
+    openapi.Parameter(
+        'rider_email', openapi.IN_QUERY,
+        description="Filter rides by the rider's email address.",
+        type=openapi.TYPE_STRING,
+    ),
+    openapi.Parameter(
+        'ordering', openapi.IN_QUERY,
+        description=(
+            'Sort the results. Use "distance"/"-distance" to sort by proximity '
+            'to a pickup location (requires pickup_latitude and pickup_longitude).'
+        ),
+        type=openapi.TYPE_STRING,
+        enum=['pickup_time', '-pickup_time', 'distance', '-distance'],
+    ),
+    openapi.Parameter(
+        'pickup_latitude', openapi.IN_QUERY,
+        description='Latitude of the reference pickup point. Required when ordering by distance.',
+        type=openapi.TYPE_NUMBER,
+    ),
+    openapi.Parameter(
+        'pickup_longitude', openapi.IN_QUERY,
+        description='Longitude of the reference pickup point. Required when ordering by distance.',
+        type=openapi.TYPE_NUMBER,
+    ),
+]
+
+
+class RideViewSet(ModelViewSet):
     """Return the list of rides (GET only).
 
     Supports:
@@ -22,7 +58,14 @@ class RideListView(ListAPIView):
     ``select_related``/``prefetch_related`` to keep the query count low.
     """
 
-    serializer_class = RideSerializer
+    def get_serializer_class(self):
+        if self.action in ('create', 'update', 'partial_update'):
+            return RideWriteSerializer
+        return RideSerializer
+
+    @swagger_auto_schema(manual_parameters=ride_list_query_parameters)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
 

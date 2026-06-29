@@ -1,8 +1,8 @@
-from django.urls import path
-from apps.ride.views import RideListView
+from rest_framework.routers import DefaultRouter
+from apps.ride.views import RideViewSet
 
 app_name = 'Rides'
+router = DefaultRouter()
+router.register('rides', RideViewSet, basename='ride')
 
-urlpatterns = [
-    path('Rides/', RideListView.as_view(), name='rides_list_view'),
-]
+urlpatterns = router.urls

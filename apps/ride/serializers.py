@@ -49,3 +49,25 @@ class RideSerializer(serializers.ModelSerializer):
             'id_rider': {'write_only': True},
             'id_driver': {'write_only': True},
         }
+
+
+class RideWriteSerializer(serializers.ModelSerializer):
+    """Serializer used for create/update operations.
+
+    Only exposes the writable fields; the nested rider, driver and
+    today_ride_events are read-only concerns handled by ``RideSerializer``.
+    """
+
+    class Meta:
+        model = Ride
+        fields = (
+            'id',
+            'status',
+            'id_rider',
+            'id_driver',
+            'pickup_latitude',
+            'pickup_longitude',
+            'dropoff_latitude',
+            'dropoff_longitude',
+            'pickup_time',
+        )
