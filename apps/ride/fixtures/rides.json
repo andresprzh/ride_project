@@ -1,0 +1,58 @@
+[
+  {
+    "model": "ride.ride",
+    "pk": 1,
+    "fields": {
+      "status": "dropoff",
+      "id_rider": 2,
+      "id_driver": 3,
+      "pickup_latitude": 40.748817,
+      "pickup_longitude": -73.985428,
+      "dropoff_latitude": 40.730610,
+      "dropoff_longitude": -73.935242,
+      "pickup_time": "2026-06-28T09:00:00Z"
+    }
+  },
+  {
+    "model": "ride.ride",
+    "pk": 2,
+    "fields": {
+      "status": "pickup",
+      "id_rider": 4,
+      "id_driver": 5,
+      "pickup_latitude": 34.052235,
+      "pickup_longitude": -118.243683,
+      "dropoff_latitude": 34.040713,
+      "dropoff_longitude": -118.246769,
+      "pickup_time": "2024-01-15T08:00:00Z"
+    }
+  },
+  {
+    "model": "ride.ride",
+    "pk": 3,
+    "fields": {
+      "status": "dropoff",
+      "id_rider": 2,
+      "id_driver": 5,
+      "pickup_latitude": 41.878113,
+      "pickup_longitude": -87.629799,
+      "dropoff_latitude": 41.885300,
+      "dropoff_longitude": -87.622600,
+      "pickup_time": "2024-02-10T12:00:00Z"
+    }
+  },
+  {
+    "model": "ride.ride",
+    "pk": 4,
+    "fields": {
+      "status": "en-route",
+      "id_rider": 4,
+      "id_driver": 3,
+      "pickup_latitude": 40.689247,
+      "pickup_longitude": -74.044502,
+      "dropoff_latitude": 40.706192,
+      "dropoff_longitude": -73.996705,
+      "pickup_time": "2026-06-28T11:00:00Z"
+    }
+  }
+]

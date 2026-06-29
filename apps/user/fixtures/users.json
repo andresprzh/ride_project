@@ -1,0 +1,97 @@
+[
+  {
+    "model": "user.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$4LI3AsPSf55C7uB8hiZCbM$Kv+lEhpUKr5mGLANrpFj6zTzQf7psA0vgA4EMW/RD00=",
+      "last_login": null,
+      "is_superuser": true,
+      "role": "admin",
+      "first_name": "Ada",
+      "last_name": "Min",
+      "email": "admin@example.com",
+      "phone_number": "1000000000",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "user.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$4LI3AsPSf55C7uB8hiZCbM$Kv+lEhpUKr5mGLANrpFj6zTzQf7psA0vgA4EMW/RD00=",
+      "last_login": null,
+      "is_superuser": false,
+      "role": "user",
+      "first_name": "Riley",
+      "last_name": "Rider",
+      "email": "rider1@example.com",
+      "phone_number": "2000000001",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-01-02T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "user.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$4LI3AsPSf55C7uB8hiZCbM$Kv+lEhpUKr5mGLANrpFj6zTzQf7psA0vgA4EMW/RD00=",
+      "last_login": null,
+      "is_superuser": false,
+      "role": "user",
+      "first_name": "Chris",
+      "last_name": "H",
+      "email": "driver1@example.com",
+      "phone_number": "3000000001",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-01-03T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "user.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$4LI3AsPSf55C7uB8hiZCbM$Kv+lEhpUKr5mGLANrpFj6zTzQf7psA0vgA4EMW/RD00=",
+      "last_login": null,
+      "is_superuser": false,
+      "role": "user",
+      "first_name": "Robin",
+      "last_name": "Rider",
+      "email": "rider2@example.com",
+      "phone_number": "2000000002",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-01-04T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "user.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$4LI3AsPSf55C7uB8hiZCbM$Kv+lEhpUKr5mGLANrpFj6zTzQf7psA0vgA4EMW/RD00=",
+      "last_login": null,
+      "is_superuser": false,
+      "role": "user",
+      "first_name": "Howard",
+      "last_name": "Y",
+      "email": "driver2@example.com",
+      "phone_number": "3000000002",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-01-05T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
