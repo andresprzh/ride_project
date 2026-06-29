@@ -52,7 +52,7 @@ This project was built using a Django template I already have, which can be acce
 
    - If `USE_SQLITE` is set to `True`, the project will use a local SQLite database. If set to `False`, it will use a PostgreSQL database and require the above environment variables to be set.
 
-    Example `.env` for SQLite:"
+    Example `.env` for SQLite:
 
    ```
    USE_SQLITE=True
@@ -92,7 +92,7 @@ This project was built using a Django template I already have, which can be acce
 
 5. **Attach VSCode debugger** to port 4000 if needed.
 
-7. **Fixture  test data**
+6. **Fixture  test data**
 
    I add testing data for local environment in this project you can run  it with  this command, the test admin user from this fixture data is :
 
@@ -103,7 +103,7 @@ This project was built using a Django template I already have, which can be acce
    docker compose run --rm web python manage.py loaddata apps/user/fixtures/users.json apps/ride/fixtures/rides.json apps/ride/fixtures/ride_events.json
    ```
 
-6. **Create super user**
+7. **Create super user**
 
    You can also create a super user with the Django command:
 
@@ -119,7 +119,7 @@ This project was built using a Django template I already have, which can be acce
 
 ## SQL report
 
-This SQL  report show the number of rides where the duration from pickup to dropoff is greter than 1 hour. For this, I  assume that the correct date for pickup is  the one in the `ride_rideevent`  table and not the one in the `ride_ride` table.
+This SQL  report shows the number of rides where the duration from pickup to dropoff is greater than 1 hour. For this, I  assume that the correct date for pickup is  the one in the `ride_rideevent`  table and not the one in the `ride_ride` table. I  also assumed that the trip is finished if   the status in the `ride` table is `dropoff`.
 
 ```sql
 WITH ride_times AS (
